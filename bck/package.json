@@ -1,0 +1,23 @@
+{
+	"name": "ecom",
+	"version": "1.0.0",
+	"description": "mern practice",
+	"main": "app.js",
+	"scripts": {
+		"start": "nodemon app.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Shivam",
+	"license": "ISC",
+	"dependencies": {
+		"cookie-parser": "^1.4.5",
+		"cors": "^2.8.5",
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1",
+		"express-jwt": "^6.0.0",
+		"express-validator": "^6.6.1",
+		"jsonwebtoken": "^8.5.1",
+		"mongoose": "^5.10.3",
+		"uuid": "^8.3.0"
+	}
+}
