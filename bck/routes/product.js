@@ -10,6 +10,7 @@ const {
 	deleteProduct,
 	getAllProduct,
 	photo,
+	getAllUniqueCategories,
 } = require('../controllers/product');
 const { check, validationResult } = require('express-validator');
 const formidable = require('formidable');
@@ -22,14 +23,28 @@ router.post(
 	isLoggedIn,
 	isAuthenticated,
 	isAdmin,
-	createProduct
+	createProduct,
 );
 
-router.get("/product/:productId",getProduct)
-router.get("/product/photo/:productId",photo)
+router.get('/product/:productId', getProduct);
+router.get('/product/photo/:productId', photo);
 
-router.delete("/product/:productId/:userId",isLoggedIn,isAuthenticated,isAdmin,deleteProduct)
-router.put("/product/:productId/:userId",isLoggedIn,isAuthenticated,isAdmin,updateProduct)
+router.delete(
+	'/product/:productId/:userId',
+	isLoggedIn,
+	isAuthenticated,
+	isAdmin,
+	deleteProduct,
+);
+router.put(
+	'/product/:productId/:userId',
+	isLoggedIn,
+	isAuthenticated,
+	isAdmin,
+	updateProduct,
+);
 
-router.get('/products',getAllProduct);
+router.get('/products', getAllProduct);
+
+router.get('/products/categories', getAllUniqueCategories);
 module.exports = router;

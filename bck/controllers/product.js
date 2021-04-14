@@ -6,6 +6,7 @@ const _ = require('lodash');
 const fs = require('fs');
 const { check, validationResult } = require('express-validator');
 const { request } = require('../routes/auth');
+const { update, count } = require('../models/product');
 exports.getProductById = (req, res, next, id) => {
 	Product.findById(id)
 		.populate('category')
@@ -25,8 +26,7 @@ exports.createProduct = (req, res) => {
 	//TODO: add validation
 	const form = formidable({
 		keepExtentions: true,
-	});
-;	// console.log(req.body) req.body is empty
+	}); // console.log(req.body) req.body is empty
 	form.parse(req, (err, fields, file) => {
 		if (err) {
 			return res.status(400).jsonp({
@@ -42,11 +42,11 @@ exports.createProduct = (req, res) => {
 					error: 'file is to Big',
 				});
 			}
-			console.log(file.photo.path)
+			console.log(file.photo.path);
 			product.photo.data = fs.readFileSync(file.photo.path);
 			// console.log(file.photo.type);   image/png
 			console.log(file.photo.data);
-			
+
 			product.photo.contentType = file.photo.type;
 		}
 
@@ -56,91 +56,91 @@ exports.createProduct = (req, res) => {
 					error: 'saving tshirt in db failed' + err,
 				});
 			}
-			console.log(product._id)
+			console.log(product._id);
 			res.json(product);
 		});
 	});
 };
-exports.getProduct = (req,res)=>{
-	console.log(req.product)
+exports.getProduct = (req, res) => {
+	console.log(req.product);
 	req.product.photo = undefined;
-	return res.json(req.product)
-}
+	return res.json(req.product);
+};
 //midlewear
-exports.photo = (req,res)=>{
-	if(req.product.photo.data){
-		console.log(req.product.photo)
+exports.photo = (req, res) => {
+	if (req.product.photo.data) {
+		console.log(req.product.photo);
 		console.log(req.product.photo.contentType);
 		// u have to set content type (it will be set as image/png or depend on file)
-		res.set('Content-Type',req.product.photo.contentType);
-		return res.send(req.product.photo.data)
+		res.set('Content-Type', req.product.photo.contentType);
+		return res.send(req.product.photo.data);
 	}
-	next()
-}
+	next();
+};
 
-exports.deleteProduct = (req,res)=>{
+exports.deleteProduct = (req, res) => {
 	let product = req.product;
-	product.remove((err,deletedProduct)=>{
-		if(err){
+	product.remove((err, deletedProduct) => {
+		if (err) {
 			res.status(400).json({
-				error:"failed to delete"
-			})
+				error: 'failed to delete',
+			});
 		}
 		res.json({
-			msg:"successfully deleted"
-		})
-	})
-}
-
-exports.updateProduct = (req,res)=>{
-const errors = validationResult(req);
-if (!errors.isEmpty()) {
-	return res.status(422).json({
-		error: errors.array(),
+			msg: 'successfully deleted',
+		});
 	});
-}
-const form = formidable({
-	keepExtentions: true,
-});
-// console.log(req.body) req.body is empty
-form.parse(req, (err, fields, file) => {
-	if (err) {
-		return res.status(400).json({
-			error: 'there is something wrong with file',
+};
+
+exports.updateProduct = (req, res) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(422).json({
+			error: errors.array(),
 		});
 	}
-	// console.log(fields) return fields
-	const product = new Product(fields);
-
-	if (file.photo) {
-		if (file.photo.size > 3000000) {
-			return res.status(400).json({
-				error: 'file is to Big',
-			});
-		}
-		console.log(file.photo.path);
-		product.photo.data = fs.readFileSync(file.photo.path);
-		// console.log(file.photo.type);   image/png
-		console.log(file.photo.data);
-
-		product.photo.contentType = file.photo.type;
-	}
-
-	product.save((err, product) => {
+	const form = formidable({
+		keepExtentions: true,
+	});
+	// console.log(req.body) req.body is empty
+	form.parse(req, (err, fields, file) => {
 		if (err) {
 			return res.status(400).json({
-				error: 'saving tshirt in db failed' + err,
+				error: 'there is something wrong with file',
 			});
 		}
-		console.log(product._id);
-		res.json(product);
-	});
-});
-}
+		// console.log(fields) return fields
+		const product = new Product(fields);
 
-exports.getAllProduct = (req,res)=>{
-	const limit = req.query.limit ?parseInt( req.query.limit ): 8;
-	const sortBy = req.query.sortby? req.query.sortby : "_id";
+		if (file.photo) {
+			if (file.photo.size > 3000000) {
+				return res.status(400).json({
+					error: 'file is to Big',
+				});
+			}
+			console.log(file.photo.path);
+			product.photo.data = fs.readFileSync(file.photo.path);
+			// console.log(file.photo.type);   image/png
+			console.log(file.photo.data);
+
+			product.photo.contentType = file.photo.type;
+		}
+
+		product.save((err, product) => {
+			if (err) {
+				return res.status(400).json({
+					error: 'saving tshirt in db failed' + err,
+				});
+			}
+			console.log(product._id);
+			res.json(product);
+		});
+	});
+};
+
+exports.getAllProduct = (req, res) => {
+	const limit = req.query.limit ? parseInt(req.query.limit) : 8;
+	const sortBy = req.query.sortby ? req.query.sortby : '_id';
 	Product.find()
 		.select('-photo')
 		.populate('category')
@@ -154,4 +154,34 @@ exports.getAllProduct = (req,res)=>{
 			}
 			res.json(products);
 		});
-}
+};
+
+exports.getAllUniqueCategories = (req, res) => {
+	Product.distinct('category', {}, (err, category) => {
+		if (err) {
+			return res.status(400).json({
+				error: 'no category found',
+			});
+		}
+		return res.json(category);
+	});
+};
+
+exports.updateStock = (req, res, next) => {
+	let myOperations = req.body.order.products.map((prod) => {
+		return {
+			updateOne: {
+				filter: { _id: prod._id },
+				update: { $inc: { stock: -prod.count, sold: +prod + count } },
+			},
+		};
+	});
+	Product.bulkWrite(myOperations, {}, (err, products) => {
+		if (err) {
+			return res.status(400).json({
+				error: 'Bulk operation failed',
+			});
+		}
+		next();
+	});
+};
