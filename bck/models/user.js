@@ -66,5 +66,6 @@ userSchema.methods = {
 		}
 	},
 };
+// console.log(userSchema.path)
 
 module.exports = mongoose.model('User', userSchema);

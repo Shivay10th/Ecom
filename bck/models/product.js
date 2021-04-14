@@ -1,6 +1,6 @@
 /** @format */
 
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
 
 productSchema = new mongoose.Schema(
@@ -41,3 +41,5 @@ productSchema = new mongoose.Schema(
 	},
 	{ timestamps: true }
 );
+// console.log(productSchema.path('sold'));
+module.exports = mongoose.model('product', productSchema);
