@@ -10,21 +10,23 @@ router.post(
 	[
 		check('name')
 			.isLength({ min: 3 })
-			.withMessage('must be at least 3 chars long'),
+			.withMessage('Name must be at least 3 chars long'),
 		check('email').isEmail().withMessage('Invalid Email'),
 		check('password')
 			.isLength({ min: 5 })
-			.withMessage('password must be at least 5 chars long'),
+			.withMessage('Password must be at least 5 chars long'),
 	],
-	signUp
+	signUp,
 );
 router.post(
 	'/signin',
 	[
 		check('email').isEmail().withMessage('Invalid Email'),
-		check('password').isLength({ min: 1 }).withMessage('password is required'),
+		check('password')
+			.isLength({ min: 1 })
+			.withMessage('Password is required'),
 	],
-	signIn
+	signIn,
 );
 
 router.get('/logout', logOut);

@@ -15,12 +15,11 @@ exports.signUp = (req, res) => {
 	const user = new User(req.body);
 	user.save((err, user) => {
 		if (err) {
-			res.status(400).json({
-				err: 'data is not saved in DB',
+			return res.status(400).json({
+				error: 'data is not saved in DB',
 			});
 		}
-		console.log(({ name } = user));
-		res.json({ name: user.name, email: user.email });
+		return res.json({ name: user.name, email: user.email });
 	});
 };
 exports.signIn = (req, res) => {

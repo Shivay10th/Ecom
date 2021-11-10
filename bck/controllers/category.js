@@ -53,7 +53,7 @@ exports.updateCategory = (req, res) => {
 				});
 			}
 			return res.json(category);
-		}
+		},
 	);
 };
 

@@ -21,13 +21,26 @@ const orderSchema = new mongoose.Schema(
 		transition_id: {},
 		amount: { type: Number },
 		address: { type: String },
+
+		status: {
+			type: String,
+			default: 'recieved',
+			enum: [
+				'Cancelled',
+				'Delivered',
+				'Shipped',
+				'Processing',
+				'Recieved',
+			],
+		},
 		updated: Date,
+
 		user: {
 			type: ObjectId,
 			ref: 'User',
 		},
 	},
-	{ timestamps: true }
+	{ timestamps: true },
 );
 const Order = mongoose.model('Order', orderSchema);
 module.exports = { Order, ProductCart };
