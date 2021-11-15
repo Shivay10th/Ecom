@@ -43,7 +43,7 @@ export const signout = (next) => {
 
 export const authenticate = (data, next) => {
 	if (typeof window !== undefined) {
-		localStorage.setItem('jwt', data);
+		localStorage.setItem('jwt', JSON.stringify(data));
 		next();
 	}
 };
