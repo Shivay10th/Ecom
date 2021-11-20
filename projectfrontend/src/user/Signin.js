@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Base from '../core/Base';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { authenticate, isAuthenticated, signin } from '../auth/helper';
 
 const Signin = () => {
