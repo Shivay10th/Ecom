@@ -22,9 +22,9 @@ const Signin = () => {
 		const user = isAuthenticated().user;
 		if (didRedirect) {
 			if (user && user.role === 1) {
-				return <p>Redirect to Admin Dashboard</p>;
+				return <Redirect to="/admin/dashboard" />;
 			} else {
-				return <p>Redirect to User Dashboard</p>;
+				return <Redirect to="/user/dashboard" />;
 			}
 		}
 		if (isAuthenticated()) {
