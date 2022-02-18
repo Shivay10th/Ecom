@@ -27,7 +27,7 @@ exports.signIn = (req, res) => {
 	const { email, password } = req.body;
 
 	if (!errors.isEmpty()) {
-		return res.status(422).json({
+		return res.status(400).json({
 			error: errors.array()[0].msg,
 		});
 	}
