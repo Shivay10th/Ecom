@@ -23,7 +23,7 @@ router.post(
 	isLoggedIn,
 	isAuthenticated,
 	isAdmin,
-	createCategory
+	createCategory,
 );
 
 router.get('/category/:categoryId', getCategory);
@@ -34,14 +34,14 @@ router.put(
 	isLoggedIn,
 	isAuthenticated,
 	isAdmin,
-	updateCategory
+	updateCategory,
 );
 router.delete(
 	'/category/:categoryId/:userId',
 	isLoggedIn,
 	isAuthenticated,
 	isAdmin,
-	removeCategory
+	removeCategory,
 );
 
 module.exports = router;

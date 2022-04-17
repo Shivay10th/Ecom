@@ -62,15 +62,15 @@ exports.createProduct = (req, res) => {
 	});
 };
 exports.getProduct = (req, res) => {
-	console.log(req.product);
+	// console.log(req.product);
 	req.product.photo = undefined;
 	return res.json(req.product);
 };
 //midlewear
 exports.photo = (req, res) => {
 	if (req.product.photo.data) {
-		console.log(req.product.photo);
-		console.log(req.product.photo.contentType);
+		// console.log(req.product.photo);
+		// console.log(req.product.photo.contentType);
 		// u have to set content type (it will be set as image/png or depend on file)
 		res.set('Content-Type', req.product.photo.contentType);
 		return res.send(req.product.photo.data);
@@ -109,8 +109,9 @@ exports.updateProduct = (req, res) => {
 				error: 'there is something wrong with file',
 			});
 		}
-		// console.log(fields) return fields
-		const product = new Product(fields);
+		//updation code
+		let product = req.product;
+		product = _.extend(product, fields);
 
 		if (file.photo) {
 			if (file.photo.size > 3000000) {
@@ -118,10 +119,9 @@ exports.updateProduct = (req, res) => {
 					error: 'file is to Big',
 				});
 			}
-			console.log(file.photo.path);
 			product.photo.data = fs.readFileSync(file.photo.path);
 			// console.log(file.photo.type);   image/png
-			console.log(file.photo.data);
+			// console.log(file.photo.data);
 
 			product.photo.contentType = file.photo.type;
 		}
@@ -129,10 +129,10 @@ exports.updateProduct = (req, res) => {
 		product.save((err, product) => {
 			if (err) {
 				return res.status(400).json({
-					error: 'saving tshirt in db failed' + err,
+					error: 'updation of tshirt in db failed' + err,
 				});
 			}
-			console.log(product._id);
+			// console.log(product._id);
 			res.json(product);
 		});
 	});
@@ -152,7 +152,7 @@ exports.getAllProduct = (req, res) => {
 					error: 'no product found',
 				});
 			}
-			res.json(products);
+			return res.json(products);
 		});
 };
 

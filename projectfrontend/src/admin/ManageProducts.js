@@ -72,11 +72,7 @@ const ManageProducts = () => {
 									</Link>
 									<button
 										onClick={() => {
-											deleteProduct(
-												product._id,
-												user._id,
-												token,
-											);
+											deleteProduct(product._id);
 										}}
 										className="btn btn-danger m-2 rounded-pill"
 									>

@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useEffect, useState } from 'react';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { isAuthenticated } from '../auth/helper';
 import Base from '../core/Base';
 import { createProduct, getCategories } from './helper/adminapicall';
@@ -30,13 +30,10 @@ const AddProduct = () => {
 		price,
 		stock,
 		categories,
-		category,
 		error,
 		createdProduct,
 		getRedirect,
 		formData,
-		photo,
-		loading,
 	} = values;
 
 	const goBack = () => (
@@ -57,8 +54,6 @@ const AddProduct = () => {
 					categories: data,
 					formData: new FormData(),
 				});
-				console.log(values.categories);
-				console.log(data);
 			}
 		});
 	};
