@@ -1,8 +1,9 @@
 /** @format */
 
 import React, { useEffect, useState } from 'react';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { isAuthenticated } from '../auth/helper';
+import { API } from '../backend';
 import Base from '../core/Base';
 import {
 	getAProduct,
@@ -11,7 +12,6 @@ import {
 } from './helper/adminapicall';
 
 const UpdateProduct = ({ match }) => {
-	const history = useHistory();
 	const { user, token } = isAuthenticated();
 	const [values, setValues] = useState({
 		name: '',
@@ -37,10 +37,8 @@ const UpdateProduct = ({ match }) => {
 		category,
 		error,
 		createdProduct,
-		getRedirect,
 		formData,
 		photo,
-		loading,
 	} = values;
 
 	const goBack = () => (
@@ -61,12 +59,12 @@ const UpdateProduct = ({ match }) => {
 					categories: data,
 					formData: new FormData(),
 				}));
-				preload(match.params.productId);
 			}
 		});
 	};
 	const preload = (productId) => {
 		getAProduct(productId).then((data) => {
+			console.log(data);
 			if (data.error) {
 				setValues({ ...values, error: data.error });
 			} else {
@@ -76,8 +74,9 @@ const UpdateProduct = ({ match }) => {
 					price: data.price,
 					description: data.description,
 					stock: data.stock,
-					category: data.category.name,
+					// category: data.category.name,
 					formData: new FormData(),
+					photo: data.photo,
 				}));
 			}
 		});
@@ -90,24 +89,21 @@ const UpdateProduct = ({ match }) => {
 
 	const onSubmit = (event) => {
 		event.preventDefault();
-		setValues({ ...values, error: '', loading: true });
-		updateAProduct(user._id, token, formData).then((data) => {
-			if (data.error) {
-				setValues({ ...values, error: data.error });
-			} else {
-				setValues({
-					...values,
-					name: '',
-					description: '',
-					price: '',
-					photo: '',
-					stock: '',
-					loading: false,
-					getRedirect: true,
-					createdProduct: data.name,
-				});
-			}
-		});
+		setValues((values) => ({ ...values, error: '', loading: true }));
+		updateAProduct(match.params.productId, user._id, token, formData).then(
+			(data) => {
+				if (data.error) {
+					setValues({ ...values, error: data.error });
+				} else {
+					setValues({
+						...values,
+						loading: false,
+						getRedirect: true,
+						createdProduct: data.name,
+					});
+				}
+			},
+		);
 	};
 
 	const handleChange = (name) => (event) => {
@@ -115,6 +111,18 @@ const UpdateProduct = ({ match }) => {
 			name === 'photo' ? event.target.files[0] : event.target.value;
 		formData.set(name, value);
 		setValues({ ...values, [name]: value });
+
+		if (name === 'photo') {
+			const reader = new FileReader();
+			reader.readAsDataURL(event.target.files[0]);
+			reader.onloadend = () => {
+				const base64Data = reader.result;
+				setValues((values) => ({
+					...values,
+					photo: base64Data,
+				}));
+			};
+		}
 	};
 
 	const successMessage = () => {
@@ -123,11 +131,12 @@ const UpdateProduct = ({ match }) => {
 				className="alert alert-success mt-3"
 				style={{ display: createdProduct ? '' : 'none' }}
 			>
-				<h4>{createdProduct} created successfully</h4>
+				<h4>{createdProduct} updated successfully</h4>
 			</div>
 		);
 	};
 	const errorMessage = () => {
+		console.log(error);
 		return (
 			<div
 				className="alert alert-success mt-3"
@@ -138,8 +147,16 @@ const UpdateProduct = ({ match }) => {
 		);
 	};
 
-	const createProductForm = () => (
+	const updateProductForm = () => (
 		<form>
+			<div>
+				<img
+					src={`${API}/product/photo/${match.params.productId}`}
+					alt="..."
+					style={{ maxWidth: '100%', height: '250px' }}
+					className="img-fluid rounded mx-auto d-block"
+				></img>
+			</div>
 			<span>Post photo</span>
 			<div className="form-group">
 				<label className="btn btn-block btn-info">
@@ -185,12 +202,21 @@ const UpdateProduct = ({ match }) => {
 					className="form-control"
 					placeholder="Category"
 				>
-					<option>{category}</option>
 					{categories &&
 						categories.map((cat, index) => {
 							if (cat.name !== category)
 								return (
 									<option value={cat._id} key={index}>
+										{cat.name}
+									</option>
+								);
+							else
+								return (
+									<option
+										value={cat._id}
+										key={index}
+										selected
+									>
 										{cat.name}
 									</option>
 								);
@@ -212,15 +238,15 @@ const UpdateProduct = ({ match }) => {
 				onClick={onSubmit}
 				className="btn btn-outline-success mb-3"
 			>
-				Create Product
+				Update Product
 			</button>
 		</form>
 	);
 
 	return (
 		<Base
-			title="Add Product Here"
-			description="Add a new item"
+			title="Update Product Here"
+			description=""
 			className="container bg-info p-4"
 		>
 			{goBack()}
@@ -228,7 +254,7 @@ const UpdateProduct = ({ match }) => {
 				<div className="col-md-8 offset-md-2">
 					{successMessage()}
 					{errorMessage()}
-					{createProductForm()}
+					{updateProductForm()}
 				</div>
 			</div>
 		</Base>
