@@ -115,6 +115,7 @@ const UpdateProduct = ({ match }) => {
 		if (name === 'photo') {
 			const reader = new FileReader();
 			reader.readAsDataURL(event.target.files[0]);
+			console.log(typeof event.target.files[0]);
 			reader.onloadend = () => {
 				const base64Data = reader.result;
 				setValues((values) => ({
@@ -151,7 +152,10 @@ const UpdateProduct = ({ match }) => {
 		<form>
 			<div>
 				<img
-					src={`${API}/product/photo/${match.params.productId}`}
+					src={
+						photo ||
+						`${API}/product/photo/${match.params.productId}`
+					}
 					alt="..."
 					style={{ maxWidth: '100%', height: '250px' }}
 					className="img-fluid rounded mx-auto d-block"
