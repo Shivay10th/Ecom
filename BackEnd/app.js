@@ -44,4 +44,4 @@ app.use('/api', categoryRoutes);
 app.use('/api', productRoutes);
 app.use('/api', orderRoutes);
 
-app.listen(process.env.PORT, () => console.log(`app is running at ${PORT}`));
+app.listen(PORT, () => console.log(`app is running at ${PORT}`));
